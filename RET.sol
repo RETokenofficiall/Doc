@@ -12,7 +12,7 @@
    
 
 */
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.7;
 // SPDX-License-Identifier: Unlicensed
 interface IERC20 {
 
@@ -98,7 +98,7 @@ interface IERC20 {
  * Using this library instead of the unchecked operations eliminates an entire
  * class of bugs, so it's recommended to use it always.
  */
- 
+
 library SafeMath {
     /**
      * @dev Returns the addition of two unsigned integers, reverting on
@@ -329,7 +329,7 @@ library Address {
      */
     function functionCall(address target, bytes memory data) internal returns (bytes memory) {
       return functionCall(target, data, "Address: low-level call failed");
-    }
+     }
 
     /**
      * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`], but with
@@ -682,7 +682,7 @@ contract RET is Context, IERC20, Ownable {
 
     mapping (address => bool) private _isExcluded;
     address[] private _excluded;
-   
+    
     uint256 private constant MAX = ~uint256(0);
     uint256 private _tTotal = 50000000000 * 10**6 * 10**9;
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
@@ -692,7 +692,7 @@ contract RET is Context, IERC20, Ownable {
     string private _symbol = "RET";
     uint8 private _decimals = 9;
 
-    address private _charityWalletAddress = 0xafcFdDFAa5f7b5821b53037A94BfbdFfc6d371B5;
+    address private _charityWalletAddress = 0xEEDA1D57eAeC2e6bD237D552cc9D1FedcAe34f75;
     
     uint256 public _taxFee = 1;
     uint256 private _previousTaxFee = _taxFee;
@@ -720,13 +720,13 @@ contract RET is Context, IERC20, Ownable {
         uint256 tokensIntoLiqudity
     );
     
-    constructor () {
+    constructor (){
         _rOwned[_msgSender()] = _rTotal;
     
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
          // Create a uniswap pair for this new token             
         uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
-            .createPair(address(this), _uniswapV2Router.WETH());
+        .createPair(address(this), _uniswapV2Router.WETH());
 
         // set the rest of the contract variables
         uniswapV2Router = _uniswapV2Router;
@@ -956,25 +956,6 @@ contract RET is Context, IERC20, Ownable {
             _tOwned[_charityWalletAddress] = _tOwned[_charityWalletAddress].add(tCharity);
     }
     
-    function _burn(address sender, uint256 tBurn) public {
-            
-        uint256 rBurn = tBurn.mul(_getRate());
-
-        _tTotal = _tTotal.sub(tBurn);
-        _rTotal = _rTotal.sub(rBurn);
-
-        _rOwned[sender] = _rOwned[sender].sub(rBurn);
-        if (_isExcluded[sender])
-             _tOwned[sender] = _tOwned[sender].sub(tBurn);
-
-        address burnAddress = address(0);
-        _rOwned[burnAddress] = _rOwned[burnAddress].add(rBurn);
-        if (_isExcluded[burnAddress])
-            _tOwned[burnAddress] = _tOwned[burnAddress].add(tBurn);    
-
-        emit Transfer(sender, burnAddress, tBurn);
-    }
-
     function calculateTaxFee(uint256 _amount) private view returns (uint256) {
         return _amount.mul(_taxFee).div(
             10**2
@@ -1090,7 +1071,7 @@ contract RET is Context, IERC20, Ownable {
         addLiquidity(otherHalf, newBalance);
         
         emit SwapAndLiquify(half, newBalance, otherHalf);
-        }
+    }
 
     function swapTokensForEth(uint256 tokenAmount) private {
         // generate the uniswap pair path of token -> weth
