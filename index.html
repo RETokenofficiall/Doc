@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unix Time</title>
+    <script>
+        async function fetchUnixTime() {
+            try {
+                let response = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                let data = await response.json();
+                document.getElementById('unixTime').textContent = data.unixtime;
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        }
+
+        window.onload = fetchUnixTime;
+    </script>
+</head>
+<body>
+    <h1>Current Unix Time:</h1>
+    <p id="unixTime">Loading...</p>
+</body>
+</html>
